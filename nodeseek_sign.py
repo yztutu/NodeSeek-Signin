@@ -208,9 +208,9 @@ def session_login(user, password, solver_type, api_base_url, client_key):
 
     data = {
         "username": user,
-        "password": password,
-        "token": token,
-        "source": "turnstile"
+        "password": password
+        #"cf-turnstile-response": token,
+        #"source": "turnstile"
     }
     headers = {
         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
@@ -225,8 +225,11 @@ def session_login(user, password, solver_type, api_base_url, client_key):
         'accept-language': "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
         'Content-Type': "application/json"
     }
+    headers["X-Captcha-Source"] = "turnstile"
+    headers["X-Captcha-Token"] = token
     try:
-        response = session.post("https://www.nodeseek.com/api/account/signIn", json=data, headers=headers)
+        url = "https://www.nodeseek.com/api/account/signIn"
+        response = session.post(url, json=data, headers=headers)
         resp_json = response.json()
         if resp_json.get("success"):
             cookies = session.cookies.get_dict()
